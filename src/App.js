@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 export default function App() {
   const [textValue, setTextValue] = useState("");
   const [totalWords, settotalWords] = useState(0);
   const [timeRemaining, setTimeRemaining] = useState(7);
   const [gameStarted, setgameStarted] = useState(false);
+  const textRef = useRef(null);
 
   useEffect(() => {
     if (timeRemaining > 0 && gameStarted) {
@@ -12,6 +13,7 @@ export default function App() {
       }, 1000);
     } else if (timeRemaining === 0 && gameStarted) {
       endGame();
+    } else if (gameStarted) {
     }
   }, [timeRemaining, gameStarted]);
 
@@ -36,6 +38,8 @@ export default function App() {
     setTimeRemaining(7);
     setTextValue("");
     settotalWords(0);
+    textRef.current.disabled = false;
+    textRef.current.focus();
   };
 
   return (
@@ -45,6 +49,7 @@ export default function App() {
         disabled={!gameStarted}
         value={textValue}
         onChange={handleChange}
+        ref={textRef}
       />
       <h4>Time Remaining : {timeRemaining} seconds</h4>
       <button disabled={gameStarted} onClick={startClock}>
