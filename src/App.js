@@ -1,25 +1,56 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from "react";
+export default function App() {
+  const [textValue, setTextValue] = useState("");
+  const [totalWords, settotalWords] = useState(0);
+  const [timeRemaining, setTimeRemaining] = useState(7);
+  const [gameStarted, setgameStarted] = useState(false);
 
-function App() {
+  useEffect(() => {
+    if (timeRemaining > 0 && gameStarted) {
+      setTimeout(() => {
+        setTimeRemaining((time) => time - 1);
+      }, 1000);
+    } else if (timeRemaining === 0 && gameStarted) {
+      endGame();
+    }
+  }, [timeRemaining, gameStarted]);
+
+  const calculateWordsCount = () => {
+    const words = textValue.trim().split(" ");
+    const filteredArray = words.filter((word) => word !== "");
+    return filteredArray.length;
+  };
+
+  const endGame = () => {
+    setgameStarted(false);
+    settotalWords(calculateWordsCount());
+  };
+
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setTextValue(value);
+  };
+
+  const startClock = (e) => {
+    setgameStarted(true);
+    setTimeRemaining(7);
+    setTextValue("");
+    settotalWords(0);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>How Fast do you type?</h1>
+      <textarea
+        disabled={!gameStarted}
+        value={textValue}
+        onChange={handleChange}
+      />
+      <h4>Time Remaining : {timeRemaining} seconds</h4>
+      <button disabled={gameStarted} onClick={startClock}>
+        Start
+      </button>
+      <h1>Total Words {totalWords}</h1>
+    </>
   );
 }
-
-export default App;
